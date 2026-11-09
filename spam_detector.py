@@ -9,6 +9,7 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
 )
+from prepare_data import extract_features
 
 # Load the email dataset
 data_path = Path("data/emails.csv")
@@ -55,3 +56,19 @@ print(confusion_matrix(y_test, predictions))
 print("\nFeature weights:")
 for feature, weight in zip(features, model.coef_[0]):
     print(f"{feature}: {weight:.4f}")
+# Part 3.5 - Test emails designed to fool the spam detector
+
+test_emails = [
+    "Hello, your meeting is scheduled for tomorrow at 10 AM.",
+    "Congratulations!!! You won a FREE cash prize!!!",
+    "Hi, please review the attached invoice for your records."
+]
+
+print("\nTesting three new emails:")
+
+for email in test_emails:
+    print(email)
+    email_features = extract_features(email)
+    email_df = pd.DataFrame([email_features])[features]
+    prediction = model.predict(email_df)[0]
+    print("Prediction:", "Spam" if prediction == 1 else "Legitimate")       
